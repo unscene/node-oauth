@@ -1,6 +1,6 @@
 
 # Overview
-An [OAuth 1.0A](http://oauth.net/core/1.0a/) library for [node.js](http://nodejs.org).  There are currently a handful of OAuth libraries but I choose to take a different route with how the API is used.  The usage is really similar to [simplegeo's python OAuth client](http://github.com/simplegeo/python-oauth2).  It extends the built-in http client which makes signing requests require two extra parameters.  The only difference is that requests must have thier body (if present) and a signature provided, the client takes care of the rest. You are responsible for handling the authentication flow, check out [this example](http://github.com/unsene/node-oauth/tree/master/examples/twitter.js) to see possible uses.
+An [OAuth 1.0A](http://oauth.net/core/1.0a/) library for [node.js](http://nodejs.org).  There are currently a handful of OAuth libraries but I choose to take a different route with how the API is used.  The usage is really similar to [simplegeo's python OAuth client](http://github.com/simplegeo/python-oauth2).  It extends the built-in http client which makes signing requests require two extra parameters.  The only difference is that requests must have thier body (if present) and a signature provided, the client takes care of the rest. You are responsible for handling the authentication flow, check out [this example](http://github.com/unscene/node-oauth/blob/master/examples/twitter.js) to see possible uses.
 
 Thanks to [ciaranj](http://github.com/ciaranj/) for providing a place to 
 [start](http://github.com/ciaranj/node-oauth).
