@@ -6,7 +6,7 @@ Thanks to [ciaranj](http://github.com/ciaranj/) for providing a place to
 [start](http://github.com/ciaranj/node-oauth).
 
 # Installation
-You can be fancy and clone the repo from here, or install (npm)[http://github.com/isaacs/npm] and run:
+You can be fancy and clone the repo from here, or install [npm](http://github.com/isaacs/npm) and run:
 
    `npm install oauth-client`
 
