@@ -5,12 +5,17 @@ An [OAuth 1.0A](http://oauth.net/core/1.0a/) library for [node.js](http://nodejs
 Thanks to [ciaranj](http://github.com/ciaranj/) for providing a place to 
 [start](http://github.com/ciaranj/node-oauth).
 
+# Installation
+You can be fancy and clone the repo from here, or install (npm)[http://github.com/isaacs/npm] and run:
+
+   npm install oauth-client
+
 # Tests
 Running the tests requires vows.  See [vows](http://vowsjs.org/) to get started.
 
 Once installed:
 
- node oauth-test.js
+   node oauth-test.js
 
 # Notes
 
