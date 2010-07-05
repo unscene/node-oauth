@@ -10,6 +10,10 @@ You can be fancy and clone the repo from here, or install [npm](http://github.co
 
    `npm install oauth-client`
 
+The include you must specify is:
+
+   `require('oauth-client')`
+
 # Tests
 Running the tests requires vows.  See [vows](http://vowsjs.org/) to get started.
 
