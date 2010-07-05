@@ -1,0 +1,10 @@
+{
+	"name": "oauth-client",
+	"version": "0.1.0",
+	"engines": "0.1.100",
+	"author": "Ryan Fairchild",
+	"directories": { 
+		"lib" : "./lib"
+	},
+	"main": "./lib/oauth"
+}
