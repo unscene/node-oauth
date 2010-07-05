@@ -8,14 +8,14 @@ Thanks to [ciaranj](http://github.com/ciaranj/) for providing a place to
 # Installation
 You can be fancy and clone the repo from here, or install (npm)[http://github.com/isaacs/npm] and run:
 
-   npm install oauth-client
+   `npm install oauth-client`
 
 # Tests
 Running the tests requires vows.  See [vows](http://vowsjs.org/) to get started.
 
 Once installed:
 
-   node oauth-test.js
+   `node oauth-test.js`
 
 # Notes
 
