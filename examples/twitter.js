@@ -22,7 +22,7 @@ function testRequest(data) {
 	//oauth setup, done once
 	var consumer = oauth.createConsumer(consumerKey,consumerSecret);
 	var token = oauth.createToken(data[0],data[1]);
-	var signer = oauth.createHMAC(consumer,token);
+	var signer = oauth.createHmac(consumer,token);
 	
 	//The body passed in should be an object to both the request and when writing
 	//this allows the base string and body to be properly encoded
@@ -49,7 +49,7 @@ function getToken() {
 	//oauth setup
 	var consumer = oauth.createConsumer(consumerKey,consumerSecret);
 	var token = oauth.createToken();
-	var signer = oauth.createHMAC(consumer);
+	var signer = oauth.createHmac(consumer);
 
 	//endpoints
 	var requestTokenUrl = '/oauth/request_token';
