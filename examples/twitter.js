@@ -3,8 +3,8 @@ var oauth = require('../lib/oauth'),
 		sys = require('sys'),
 		fs = require('fs');
 
-var consumerKey = 'your_consumer_key';
-var consumerSecret = 'your_consumer_secret';
+var consumerKey = 'key';
+var consumerSecret = 'secret';
 
 //Read in the tokens file so when running the example
 //you don't have to keep requesting an authorized access token
@@ -13,15 +13,13 @@ fs.readFile(__dirname + '/tokens', function(err,data) {
 	else testRequest(data);
 })
 
-function testRequest(data) {
+function testRequest(token,secret) {
 	
 	var client = oauth.createClient(443,'api.twitter.com',true);
-	
-	data = data.toString().split(' ');
 
 	//oauth setup, done once
 	var consumer = oauth.createConsumer(consumerKey,consumerSecret);
-	var token = oauth.createToken(data[0],data[1]);
+	var token = oauth.createToken(token,secret);
 	var signer = oauth.createHmac(consumer,token);
 	
 	//The body passed in should be an object to both the request and when writing
@@ -60,6 +58,7 @@ function getToken() {
 	var tokenData = '';
 
 	var requestToken = client.request('POST',requestTokenUrl,null,null,signer);
+	sys.print(sys.inspect(requestToken));
 	requestToken.end();
 	
 	requestToken.addListener('response', function (response) {
@@ -69,20 +68,8 @@ function getToken() {
 	
 	this.onAccessTokenReceived = function() {
 		token.decode(tokenData);
-
-		var tokenFile = __dirname + '/tokens';
-		var entry = token.oauth_token + ' ' + token.oauth_token_secret;
-
-		fs.open(tokenFile, 'w', function(err,fd) { 
-			if (err) sys.error(err);	
-			else fs.close(fd,tokenFile);
-		});
-			
-		fs.writeFile(tokenFile, entry, function(err) { 
-			if(err) sys.error(err) 
-			
-			sys.print('Wrote token to file, exit and rerun to post to twitter\n');
-		});
+		//At this point you should save this token and secret
+		testRequest(token.oauth_token,token.oauth_token_secret);
 	}
 	
 	this.onAccessTokenResponse = function(response) {
@@ -92,7 +79,7 @@ function getToken() {
 	
 	this.onRequestTokenResponse = function() {
 		token.decode(data);
-
+		sys.p(data)
 		sys.print('Visit the following website\n');
 		sys.print('https://api.twitter.com'+authorizeTokenUrl+'?oauth_token='+token.oauth_token + '\n');
 		sys.print('Enter verifier>')

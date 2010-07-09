@@ -2,21 +2,78 @@ var vows = require('vows'),
     assert = require('assert'),
 		oauth = require('../lib/oauth'),
 		sys = require('sys'),
-		qs = require('../lib/querystring');
+		qs = require('../lib/querystring'),
+		http = require('http');
 
-function normalizeUrlTo(url) {
-	var context = {
-		topic: function() { 
-			return oauth.Signature.prototype.normalizeURL(this.context.name) 
+exports.consumer = vows.describe('Consumer')
+	.addBatch({
+		'Creating a consumer': {
+			topic: oauth.createConsumer(),
+			'should return a consumer': function(topic) {
+				assert.instanceOf(topic,oauth.Consumer);
+			}
+		},
+		'Encoding a consumer': {
+			topic: oauth.createConsumer('key','secret'),
+			'should return only oauth properties': function(topic) {
+				for (var prop in topic.encode())
+					if(typeof(topic[prop]) != 'function')
+						assert.match(prop,/^oauth_\w+$/);
+			},
+			'should not return empty properties': function(topic) {
+				for (var prop in topic.encode()) {
+					var val = topic[prop];
+					assert.isTrue(val != '' && val != undefined && val != null);
+				}
+			}
+		},
+		'Decoding a consumer': {
+			topic: function () {
+				var consumer = oauth.createConsumer('key','secret');
+				consumer.decode('oauth_consumer_key=test&oauth_consumer_secret=');
+				return consumer;
+			},
+			'should parse the values into the token as properties': function(topic) {
+				assert.equal(topic['oauth_consumer_key'],'test');
+				assert.equal(topic['oauth_consumer_secret'],'');
+			}	
 		}
-	};
-	
-	context['should normalize to ' + url] = function(topic) { 
-		return assert.equal(topic,url) 
-	};
-	
-	return context;
-}
+});
+
+exports.token = vows.describe('Token')
+	.addBatch({
+		'Creating a token': {
+			topic: oauth.createToken(),
+			'should return a token': function(topic) {
+				assert.instanceOf(topic,oauth.Token);
+			}
+		},
+		'Encoding a token': {
+			topic: oauth.createToken('key','secret'),
+			'should return only oauth properties': function(topic) {
+				for (var prop in topic.encode())
+					if(typeof(topic[prop]) != 'function')
+						assert.match(prop,/^oauth_\w+$/);
+			},
+			'should not return empty properties': function(topic) {
+				for (var prop in topic.encode()) {
+					var val = topic[prop];
+					assert.isTrue(val != '' && val != undefined && val != null);
+				}
+			}
+		},
+		'Decoding a token': {
+			topic: function () {
+				var consumer = oauth.createToken('key','secret');
+				consumer.decode('oauth_token=test&oauth_token_secret=');
+				return consumer;
+			},
+			'should parse the values into the token as properties': function(topic) {
+				assert.equal(topic['oauth_token'],'test');
+				assert.equal(topic['oauth_token_secret'],'');
+			}	
+		}
+});
 
 exports.signatures = vows.describe('Signatures')
 	.addBatch({
@@ -105,10 +162,34 @@ exports.signatures = vows.describe('Signatures')
 			}
 		}
 	})
+
+function normalizeUrlTo(url) {
+	var context = {
+		topic: function() { 
+			return oauth.normalizeURL(this.context.name) 
+		}
+	};
+
+	context['should normalize to ' + url] = function(topic) { 
+		return assert.equal(topic,url) 
+	};
+
+	return context;
+}
+
+exports.utilities = vows.describe('utilities')
+	.addBatch({
+		'when merging an object': {
+			topic: function () { return {a:1}.merge({b:2}) },
+			'it should merge everything from the right hand into the left hand': function(topic) {
+				assert.deepEqual(topic,{a:1,b:2});
+			}
+		}
+	})
 	.addBatch({
 		'when normalizing an object': {
 			topic: function () { 
-				return oauth.Signature.prototype.normalize(
+				return oauth.normalize(
 					{d: 1, b: 2, x: 3, a: 4, c: 5, func: function() { return } }) 
 			 	},
 			'it should be sorted lexiographically': function(topic) {
@@ -124,15 +205,19 @@ exports.signatures = vows.describe('Signatures')
 		'https://www.test.com:80/resource?key=value#fragment': normalizeUrlTo('https://www.test.com:80/resource'),
 		'https://www.test.com:443/resource?key=value#fragment': normalizeUrlTo('https://www.test.com/resource'),
 		'http://www.test.com:80/resource?key=value#fragment': normalizeUrlTo('http://www.test.com/resource'),
-		'http://www.test.com:8080/resource?key=value#fragment': normalizeUrlTo('http://www.test.com:8080/resource')
-	});
-	
-exports.utilities = vows.describe('utilities')
-	.addBatch({
-		'when merging an object': {
-			topic: function () { return {a:1}.merge({b:2}) },
-			'it should merge everything from the right hand into the left hand': function(topic) {
-				assert.deepEqual({a:1,b:2},topic);
+		'http://www.test.com:8080/resource?key=value#fragment': normalizeUrlTo('http://www.test.com:8080/resource'),
+		'When path and query string are provided in the request': {
+			topic: function () { return oauth.normalizeURL('/resource','www.twitter.com',80,false) },
+			'merge hostname and querystring': function(topic) {
+				assert.equal(topic,'http://www.twitter.com/resource');
+			}
+		}
+	}).
+	addBatch({
+		'Parameter pruning RegEx': {
+			topic: function () { return /^oauth_\w+$/ },
+			'should not match': function(topic) {
+				assert.isFalse(/^oauth_\w+$/.test('prop'));
 			}
 		}
 	});
