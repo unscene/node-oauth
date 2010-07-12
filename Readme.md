@@ -18,9 +18,6 @@ Otherwise:
 
    `require('oauth')`
 
-#Usage
-OAuth 1.0A has two types of authorization
-
 # Tests
 I am not sure the total code coverage of the tests at this point.  
 Running the tests requires vows.  See [vows](http://vowsjs.org/) to get started.
