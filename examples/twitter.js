@@ -6,13 +6,6 @@ var oauth = require('../lib/oauth'),
 var consumerKey = 'key';
 var consumerSecret = 'secret';
 
-//Read in the tokens file so when running the example
-//you don't have to keep requesting an authorized access token
-fs.readFile(__dirname + '/tokens', function(err,data) {
-	if (err) getToken();
-	else testRequest(data);
-})
-
 function testRequest(token,secret) {
 	
 	var client = oauth.createClient(443,'api.twitter.com',true);
@@ -58,7 +51,6 @@ function getToken() {
 	var tokenData = '';
 
 	var requestToken = client.request('POST',requestTokenUrl,null,null,signer);
-	sys.print(sys.inspect(requestToken));
 	requestToken.end();
 	
 	requestToken.addListener('response', function (response) {

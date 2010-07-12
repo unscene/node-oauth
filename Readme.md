@@ -10,11 +10,19 @@ You can be fancy and clone the repo from here, or install [npm](http://github.co
 
    `npm install oauth-client`
 
-The include you must specify is:
+The include you must specify, if using the npm install:
 
    `require('oauth-client')`
 
+Otherwise:
+
+   `require('oauth')`
+
+#Usage
+OAuth 1.0A has two types of authorization
+
 # Tests
+I am not sure the total code coverage of the tests at this point.  
 Running the tests requires vows.  See [vows](http://vowsjs.org/) to get started.
 
 Once installed:
@@ -23,8 +31,6 @@ Once installed:
 
 # Notes
 
-* It severely lacks tests (any help appreciated), but for now the signature base string has a couple
-of tests. 
 * I had to patch querystring.js to support overriding escape.  qs.stringify was using its internal version of
 escape and it made the implementation ugly without being able to override its behavior.
 
