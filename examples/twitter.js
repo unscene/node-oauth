@@ -3,17 +3,34 @@ var oauth = require('../lib/oauth'),
 		sys = require('sys'),
 		fs = require('fs');
 
-var consumerKey = 'key';
-var consumerSecret = 'secret';
+var consumerKey = 'Bwl6RuAsRdF6WNSdTIO2jw';
+var consumerSecret = 'ZlzjyRkAlkAaWf6Lrepby3YtmkvMHY3NK0DVqG7GFc';
 
-function testRequest(token,secret) {
-	
-	var client = oauth.createClient(443,'api.twitter.com',true);
+var client = oauth.createClient(443,'api.twitter.com',true);
 
-	//oauth setup, done once
-	var consumer = oauth.createConsumer(consumerKey,consumerSecret);
-	var token = oauth.createToken(token,secret);
-	var signer = oauth.createHmac(consumer,token);
+//oauth setup
+var consumer = oauth.createConsumer(consumerKey,consumerSecret);
+var token = oauth.createToken();
+var signer = oauth.createHmac(consumer);
+
+//endpoints
+var requestTokenUrl = '/oauth/request_token';
+var accessTokenUrl = '/oauth/access_token';
+var authorizeTokenUrl = '/oauth/authorize';
+
+var data = '';
+var tokenData = '';
+
+var requestToken = client.request('POST',requestTokenUrl,null,null,signer);
+requestToken.end();
+
+requestToken.addListener('response', function (response) {
+	response.addListener('data', function (chunk) {	data+=chunk });
+	response.addListener('end', onRequestTokenResponse);
+});
+
+function onAccessTokenReceived() {
+	token.decode(tokenData);
 	
 	//The body passed in should be an object to both the request and when writing
 	//this allows the base string and body to be properly encoded
@@ -34,60 +51,30 @@ function testRequest(token,secret) {
 	});
 }
 
-function getToken() {
-	var client = oauth.createClient(443,'api.twitter.com',true);
-	
-	//oauth setup
-	var consumer = oauth.createConsumer(consumerKey,consumerSecret);
-	var token = oauth.createToken();
-	var signer = oauth.createHmac(consumer);
-
-	//endpoints
-	var requestTokenUrl = '/oauth/request_token';
-	var accessTokenUrl = '/oauth/access_token';
-	var authorizeTokenUrl = '/oauth/authorize';
-
-	var data = '';
-	var tokenData = '';
-
-	var requestToken = client.request('POST',requestTokenUrl,null,null,signer);
-	requestToken.end();
-	
-	requestToken.addListener('response', function (response) {
-		response.addListener('data', function (chunk) {	data+=chunk });
-		response.addListener('end', onRequestTokenResponse);
-	});
-	
-	this.onAccessTokenReceived = function() {
-		token.decode(tokenData);
-		//At this point you should save this token and secret
-		testRequest(token.oauth_token,token.oauth_token_secret);
-	}
-	
-	this.onAccessTokenResponse = function(response) {
-		response.addListener('data', function(chunk) { tokenData+=chunk });
-		response.addListener('end', onAccessTokenReceived);
-	}
-	
-	this.onRequestTokenResponse = function() {
-		token.decode(data);
-		sys.p(data)
-		sys.print('Visit the following website\n');
-		sys.print('https://api.twitter.com'+authorizeTokenUrl+'?oauth_token='+token.oauth_token + '\n');
-		sys.print('Enter verifier>')
-
-		stream = process.openStdin();
-		stream.addListener('data', onVerifierReceived);
-	}
-	
-	this.onVerifierReceived = function(chunk) {
-		var tokenData = '';
-		token.oauth_verifier = chunk.toString('utf8',0,chunk.length-1);
-		stream.removeListener('data',arguments.callee);
-
-		signer.token = token;
-		var accessToken = client.request('POST',accessTokenUrl,null,null,signer);
-		accessToken.addListener('response', onAccessTokenResponse);
-		accessToken.end();
-	}
+function onAccessTokenResponse(response) {
+	response.addListener('data', function(chunk) { tokenData+=chunk });
+	response.addListener('end', onAccessTokenReceived);
 }
+
+function onRequestTokenResponse() {
+	token.decode(data);
+	sys.p(data)
+	sys.print('Visit the following website\n');
+	sys.print('https://api.twitter.com'+authorizeTokenUrl+'?oauth_token='+token.oauth_token + '\n');
+	sys.print('Enter verifier>')
+
+	stream = process.openStdin();
+	stream.addListener('data', onVerifierReceived);
+}
+
+function onVerifierReceived(chunk) {
+	var tokenData = '';
+	token.oauth_verifier = chunk.toString('utf8',0,chunk.length-1);
+	stream.removeListener('data',arguments.callee);
+
+	signer.token = token;
+	var accessToken = client.request('POST',accessTokenUrl,null,null,signer);
+	accessToken.addListener('response', onAccessTokenResponse);
+	accessToken.end();
+}
+
