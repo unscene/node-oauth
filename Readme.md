@@ -8,19 +8,73 @@ Thanks to [ciaranj](http://github.com/ciaranj/) for providing a place to
 # Installation
 You can be fancy and clone the repo from here, or install [npm](http://github.com/isaacs/npm) and run:
 
-   `npm install oauth-client`
+	npm install oauth-client
 
 The include you must specify, if using the npm install:
 
-   `require('oauth-client')`
+	require('oauth-client')
 
 Otherwise:
 
-   `require('oauth')`
+	require('oauth')
+
+#Usage
+
+See the twitter example for a three legged authentication example.
+
+## Creating a client
+Creating a client works exactly to the regular http client, it actually returns an subclassed http client.
+
+	client = oauth.createClient(443,'api.twitter.com,true)
+
+## Sending requests
+Sending http requests is the only area that has a couple of differences from the built-in http module:
+
+	var headers = {
+		some-header: 'some value' 
+	}
+	
+	var body = {
+		a: 'b'
+	}
+	
+	req = client.request('POST', '/request_token', headers, body, null)
+	req.write(body);
+	req.end();
+
+We will talk about that last parameter in a minute.  With node you can stream the body and the only reason you must provide this up front is for the body to be included in the signature base string calculation, if you are sending a body of type 'application/x-www-form-urlencoded'.  The body must be an object (it then gets converted into a properly encoded string).  There are a set of default headers included but you can override them by simply providing your own, your headers get merged into the defaults.  Be sure to include the same body as you specified in the request, this way you can still stream the body.
+
+## Signatures
+
+That last parameter is the only portion that takes some setup.  This is the piece that calculates and signed your requests.  There are two types provided: Plaintext & HMAC-SHA1 (RSA in the future maybe)
+
+	var consumer = oauth.createConsumer('key','secret');
+	var signer = oauth.createHMAC(consumer);
+	..
+	
+	client.request('POST', '/request_token', headers, body, signer);
+
+If you have an authorized or unauthorized token you can provide that to the createHMAC constructor as well.
+You just need to provide the type of signature you want along with the consumer and tokens, requests get automatically signed.
+
+## Consumers and Tokens
+
+Consumers and tokens both have a utility method decode() that will take an http response and collect the form encoded responses.
+
+	var data = ''
+	
+	requestToken.addListener('response', function (response) {
+		response.addListener('data', function (chunk) {	data+=chunk });
+		response.addListener('end', onRequestTokenResponse);
+	});
+
+	function onRequestTokenResponse() {
+		token.decode(data);
+		..
+	}
 
 # Tests
-I am not sure the total code coverage of the tests at this point.  
-Running the tests requires vows.  See [vows](http://vowsjs.org/) to get started.
+I am not sure the total code coverage of the tests at this point, but it is quickly getting there.Running the tests requires vows.  See [vows](http://vowsjs.org/) to get started.
 
 Once installed:
 
