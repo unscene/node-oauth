@@ -44,6 +44,12 @@ Sending http requests is the only area that has a couple of differences from the
 
 We will talk about that last parameter in a minute.  With node you can stream the body and the only reason you must provide this up front is for the body to be included in the signature base string calculation, if you are sending a body of type 'application/x-www-form-urlencoded'.  The body must be an object (it then gets converted into a properly encoded string).  There are a set of default headers included but you can override them by simply providing your own, your headers get merged into the defaults.  Be sure to include the same body as you specified in the request, this way you can still stream the body.
 
+You can also specify your own oauth_* parameters in the query string:
+
+	req = client.request('POST', '/request_token?oauth_callback=oob', headers, body, null)
+
+These params get split out and included in the authorization header.
+
 ## Signatures
 
 That last parameter is the only portion that takes some setup.  This is the piece that calculates and signed your requests.  There are two types provided: Plaintext & HMAC-SHA1 (RSA in the future maybe)
