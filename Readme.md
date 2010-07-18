@@ -48,7 +48,7 @@ You can also specify your own oauth_* parameters in the query string:
 
 	req = client.request('POST', '/request_token?oauth_callback=oob', headers, body, null)
 
-These params get split out and included in the authorization header.
+These params get split out and included in the authorization header.	
 
 ## Signatures
 

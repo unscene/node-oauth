@@ -201,7 +201,7 @@ exports.utilities = vows.describe('utilities')
 		}
 	})
 	.addBatch({
-		'Https://WWW.test.com:80/RESOURCE?key=value#fragment': normalizeUrlTo('https://www.test.com:80/resource'),
+		'https://WWW.test.com:80/RESOURCE?key=value#fragment': normalizeUrlTo('https://www.test.com:80/RESOURCE'),
 		'https://www.test.com:80/resource?key=value#fragment': normalizeUrlTo('https://www.test.com:80/resource'),
 		'https://www.test.com:443/resource?key=value#fragment': normalizeUrlTo('https://www.test.com/resource'),
 		'http://www.test.com:80/resource?key=value#fragment': normalizeUrlTo('http://www.test.com/resource'),
