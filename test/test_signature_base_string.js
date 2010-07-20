@@ -4,7 +4,7 @@ var vows = require('vows'),
 
 vows.describe('signature base string').addBatch({
   'base_string': {
-    topic: function() {return oauth.Signature.prototype.base_string},
+    topic: function() {return oauth.Signature.prototype.baseString},
     'example A.5.1': function(topic) {
       var params = {
         'oauth_consumer_key':'dpf43f3p2l4k3l03',

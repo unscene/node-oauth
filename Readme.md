@@ -55,7 +55,7 @@ These params get split out and included in the authorization header.
 That last parameter is the only portion that takes some setup.  This is the piece that calculates and signed your requests.  There are two types provided: Plaintext & HMAC-SHA1 (RSA in the future maybe)
 
 	var consumer = oauth.createConsumer('key','secret');
-	var signer = oauth.createHMAC(consumer);
+	var signer = oauth.createHmac(consumer);
 	..
 	
 	client.request('POST', '/request_token', headers, body, signer);
