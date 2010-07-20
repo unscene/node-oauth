@@ -84,7 +84,7 @@ I am not sure the total code coverage of the tests at this point, but it is quic
 
 Once installed:
 
-   `node oauth-test.js`
+   `NODE_PATH=lib vows tests/*`
 
 # Notes
 
