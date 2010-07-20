@@ -1,7 +1,6 @@
 var vows = require('vows'),
-    assert = require('assert');
-
-var oauth = require('oauth');
+    assert = require('assert'),
+    oauth = require('../lib/oauth');
 
 vows.describe('fill url').addBatch({
   'when hostname is missing': {

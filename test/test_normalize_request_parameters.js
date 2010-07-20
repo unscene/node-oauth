@@ -1,7 +1,6 @@
 var vows = require('vows'),
-    assert = require('assert');
-
-var oauth = require('oauth');
+    assert = require('assert'),
+    oauth = require('../lib/oauth');
 
 var params_for_signature = function(params) {
   return oauth.params_for_signature(params);

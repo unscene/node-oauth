@@ -84,12 +84,7 @@ I am not sure the total code coverage of the tests at this point, but it is quic
 
 Once installed:
 
-   `NODE_PATH=lib vows tests/*`
-
-# Notes
-
-* I had to patch querystring.js to support overriding escape.  qs.stringify was using its internal version of
-escape and it made the implementation ugly without being able to override its behavior.
+	vows tests/*
 
 
 ## License 
