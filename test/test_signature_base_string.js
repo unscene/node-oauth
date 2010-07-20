@@ -49,5 +49,23 @@ vows.describe('signature base string').addBatch({
     'wiki_2_simple_without_ending_slash': function(topic) {
       assert.equal(topic('get', 'http://example.com', {n:'v'}),'GET&http%3A%2F%2Fexample.com%2F&n%3Dv');
     },
+    'example 3': function(topic) {
+      assert.equal(topic('get', 'http://example.com', {foo:'bar/baz'}),'GET&http%3A%2F%2Fexample.com%2F&foo%3Dbar%252Fbaz');
+    },
+    'example 4': function(topic) {
+      var params = {
+        oauth_consumer_key: 'dpf43f3p2l4k3l03',
+        oauth_token: 'nnch734d00sl2jdk',
+        oauth_nonce: 'CVUoMBFqZET4z34',
+        oauth_timestamp: '1279644048',
+        oauth_signature_method: 'HMAC-SHA1',
+        oauth_version:  '1.0',
+        status: "'Tue Jul 20 2010 18:40:48 GMT+0200 (CEST)'"
+      }
+      assert.equal(topic('post', 'http://api.twitter.com/1/statuses/update.json', params), 'POST&http%3A%2F%2Fapi.twitter.com%2F1%2Fstatuses%2Fupdate.json&oauth_consumer_key%3Ddpf43f3p2l4k3l03%26oauth_nonce%3DCVUoMBFqZET4z34%26oauth_signature_method%3DHMAC-SHA1%26oauth_timestamp%3D1279644048%26oauth_token%3Dnnch734d00sl2jdk%26oauth_version%3D1.0%26status%3D%2527Tue%2520Jul%252020%25202010%252018%253A40%253A48%2520GMT%252B0200%2520%2528CEST%2529%2527');
+    },
+    'example 5': function(topic) {
+      assert.equal(topic('post', 'http://example.com', {status: "'Tue Jul 20 2010 18:40:48 GMT+0200 (CEST)'"}), 'POST&http%3A%2F%2Fexample.com%2F&status%3D%2527Tue%2520Jul%252020%25202010%252018%253A40%253A48%2520GMT%252B0200%2520%2528CEST%2529%2527');
+    },
   },
 }).export(module);
