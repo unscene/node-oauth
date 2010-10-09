@@ -21,9 +21,12 @@ vows.describe('utilities').addBatch({
 })
 .addBatch({
   'Parameter pruning RegEx': {
-    topic: function () { return /^oauth_\w+$/ },
+    topic: function () { return function(a) { return /^oauth_\w+$/.test(a) } },
     'should not match': function(topic) {
-      assert.isFalse(/^oauth_\w+$/.test('prop'));
+      assert.isFalse(topic('prop'));
+    },
+    'should match': function(topic) {
+      assert.isTrue(topic('oauth_prop'))
     }
   }
 }).export(module);

@@ -3,8 +3,8 @@ var oauth = require('../lib/oauth'),
 		sys = require('sys'),
 		fs = require('fs');
 
-var consumerKey = '';
-var consumerSecret = '';
+var consumerKey = 'Bwl6RuAsRdF6WNSdTIO2jw';
+var consumerSecret = 'ZlzjyRkAlkAaWf6Lrepby3YtmkvMHY3NK0DVqG7GFc';
 
 var client = oauth.createClient(443,'api.twitter.com',true);
 
