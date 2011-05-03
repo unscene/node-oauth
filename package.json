@@ -1,10 +1,23 @@
 {
-	"name": "oauth-client",
-	"version": "0.2.0",
-	"engines": { "node" : "~0.4" },
-	"author": "Ryan Fairchild",
-	"directories": { 
-		"lib" : "./lib"
-	},
-	"main": "./lib/oauth"
+  "name": "oauth-client",
+  "version": "0.3.0",
+  "engines": {
+    "node": "~0.4"
+  },
+  "author": "Ryan Fairchild",
+  "contributors": [
+    "Mak Nazečić-Andrlon"
+  ],
+  "directories": {
+    "lib": "./lib"
+  },
+  "main": "./lib/oauth",
+  "dependencies": {
+    "node-uuid": "~1.0"
+  },
+  "description": "OAuth 1.0 (RFC 5849) client library.",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/Imperion/node-oauth.git"
+  }
 }
