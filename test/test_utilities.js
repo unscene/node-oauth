@@ -4,7 +4,7 @@ var vows = require('vows'),
 
 vows.describe('utilities').addBatch({
   'when merging an object': {
-    topic: function() { return function(a,b) { return Object.merge(a,b) } },
+    topic: function() { return function(a,b) { return oauth.merge(a,b) } },
     'it should merge everything from the right hand into the left hand': function(topic) {
       assert.deepEqual(topic({a:1}, {b:2}),{a:1,b:2});
     },

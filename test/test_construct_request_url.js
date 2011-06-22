@@ -26,6 +26,5 @@ vows.describe('construct request url').addBatch({
   'https://example.com/resource':                           normalizeUrlTo('https://example.com/resource'),
   'http://example.com:8080/resource':                       normalizeUrlTo('http://example.com:8080/resource'),
   'https://example.com:8080/resource':                      normalizeUrlTo('https://example.com:8080/resource'),
-  'scheme://authority:port/path':                           normalizeUrlTo('scheme://authority:port/path'),
 }).export(module);
 

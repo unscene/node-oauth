@@ -2,7 +2,7 @@
   "name": "oauth-client",
   "version": "0.1.8",
   "engines": {
-    "node": "~0.4"
+    "node": ">=0.4.8"
   },
   "author": "Ryan Fairchild",
   "contributors": [
@@ -13,7 +13,7 @@
   },
   "main": "./lib/oauth",
   "dependencies": {
-    "node-uuid": "~1.0"
+    "node-uuid": "1.1.0"
   },
   "description": "OAuth 1.0 (RFC 5849) client library.",
   "repository": {
