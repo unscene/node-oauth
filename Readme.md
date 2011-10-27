@@ -2,7 +2,7 @@
 # Overview
 An [OAuth 1.0A](http://oauth.net/core/1.0a/) library for [node.js](http://nodejs.org).  There are currently a handful of OAuth libraries but I choose to take a different route with how the API is used.  The usage is really similar to [simplegeo's python OAuth client](http://github.com/simplegeo/python-oauth2).  It extends the built-in http client which makes signing requests require two extra parameters.  The only difference is that requests must have thier body (if present) and a signature provided, the client takes care of the rest. You are responsible for handling the authentication flow, check out [this example](http://github.com/unscene/node-oauth/blob/master/examples/twitter.js) to see possible uses.
 
-Thanks to [ciaranj](http://github.com/ciaranj/) for providing a place to 
+Thanks to [ciaranj](http://github.com/ciaranj/) for providing a place to
 [start](http://github.com/ciaranj/node-oauth).
 
 # Installation
@@ -31,13 +31,13 @@ Creating a client works exactly to the regular http client, it actually returns 
 Sending http requests is the only area that has a couple of differences from the built-in http module:
 
 	var headers = {
-		some-header: 'some value' 
+		some-header: 'some value'
 	}
-	
+
 	var body = {
 		a: 'b'
 	}
-	
+
 	req = client.request('POST', '/request_token', headers, body, null)
 	req.write(body);
 	req.end();
@@ -48,7 +48,7 @@ You can also specify your own oauth_* parameters in the query string:
 
 	req = client.request('POST', '/request_token?oauth_callback=oob', headers, body, null)
 
-These params get split out and included in the authorization header.	
+These params get split out and included in the authorization header.
 
 ## Signatures
 
@@ -57,7 +57,7 @@ That last parameter is the only portion that takes some setup.  This is the piec
 	var consumer = oauth.createConsumer('key','secret');
 	var signer = oauth.createHmac(consumer);
 	..
-	
+
 	client.request('POST', '/request_token', headers, body, signer);
 
 If you have an authorized or unauthorized token you can provide that to the createHMAC constructor as well.
@@ -68,7 +68,7 @@ You just need to provide the type of signature you want along with the consumer 
 Consumers and tokens both have a utility method decode() that will take an http response and collect the form encoded responses.
 
 	var data = ''
-	
+
 	requestToken.addListener('response', function (response) {
 		response.addListener('data', function (chunk) {	data+=chunk });
 		response.addListener('end', onRequestTokenResponse);
@@ -87,7 +87,7 @@ Once installed:
 	vows tests/*
 
 
-## License 
+## License
 
 (The MIT License)
 
