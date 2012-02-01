@@ -10,12 +10,12 @@ vows.describe('Token').addBatch({
     }
   },
   'Encoding a token': {
-    topic: function () {     
+    topic: function () {
       return oauth.createToken('key','secret').encode();
-        
+
     },
     'should return only oauth properties': function(topic) {
-      for (var prop in topic)        
+      for (var prop in topic)
           assert.match(prop,/^oauth_\w+$/);
     },
     'should not return empty properties': function(topic) {

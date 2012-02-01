@@ -31,20 +31,20 @@ requestToken.addListener('response', function (response) {
 
 function onAccessTokenReceived() {
 	token.decode(tokenData);
-	
+
 	//The body passed in should be an object to both the request and when writing
 	//this allows the base string and body to be properly encoded
 	var body = { status: 'testing' };
-	
+
 	//Note the two extra params, the body and signature
 	var request = client.request('POST','/1/statuses/update.json',null,body,signer);
 
 	//The rest of the code is standard node
 	var data = '';
-		
+
 	request.write(body);
-	request.end();	
-	
+	request.end();
+
 	request.addListener('response', function(response) {
 		response.addListener('data',function(chunk) { data+=chunk })
 		response.addListener('end',function() { sys.print(sys.inspect(data)); sys.print('\n'); });
