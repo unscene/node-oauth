@@ -1,8 +1,8 @@
 var util = require('util'),
 	oauth = require('../lib/oauth');
 
-var consumer = oauth.createConsumer('ShXLZMlYgviip5g83CQLQ', 'Au7CzGraPjsMRjzGQKCg0OJZP3rJxm845VpfWzWdk');
-var token = oauth.createToken('6897212-jKyjiOsqQUCPkdZfRejlnNeFEEUwvnA7EY1GIlOja0', 'v2DgKMV0hMzkCOFCS71KODcUzJgyjJEbPb5LcUnrf7M');
+var consumer = oauth.createConsumer('', '');
+var token = oauth.createToken('', '');
 var signer = oauth.createHmac(consumer, token);
 
 var body = { 
