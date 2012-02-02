@@ -20,33 +20,38 @@ Otherwise:
 
 #Usage
 
-See the twitter example for a three legged authentication example.
+See the example.
 
-## Creating a client
-Creating a client works exactly to the regular http client, it actually returns an subclassed http client.
+## Sending request
+Sending requests works very similar to the latest version of node's built-in http library.
 
-	client = oauth.createClient(443,'api.twitter.com,true)
-
-## Sending requests
-Sending http requests is the only area that has a couple of differences from the built-in http module:
-
-	var headers = {
-		some-header: 'some value' 
+	var request = {
+		port: 443,
+		host: 'api.twitter.com',
+		https: true,
+		path: '/1/statuses/update.json',
+		oauth_signature: signer,
+		method: 'POST',
+		body: body
 	}
 	
-	var body = {
-		a: 'b'
-	}
-	
-	req = client.request('POST', '/request_token', headers, body, null)
+	request = oauth.request(request, function(response) { ... });
 	req.write(body);
 	req.end();
+	
+The only two difference here between the built-in client and this one, is that you must include 'https: true' and the 'body' must be included in the request options.  You must include it so that the base string can be calculated correctly. There are a set of default headers included but you can override them by simply providing your own, your headers get merged into the defaults.  Be sure to include the same body as you specified in the request, this way you can still stream the body.
 
-We will talk about that last parameter in a minute.  With node you can stream the body and the only reason you must provide this up front is for the body to be included in the signature base string calculation, if you are sending a body of type 'application/x-www-form-urlencoded'.  The body must be an object (it then gets converted into a properly encoded string).  There are a set of default headers included but you can override them by simply providing your own, your headers get merged into the defaults.  Be sure to include the same body as you specified in the request, this way you can still stream the body.
+If you must specify your own oauth_* parameters put them in the query string:
 
-You can also specify your own oauth_* parameters in the query string:
-
-	req = client.request('POST', '/request_token?oauth_callback=oob', headers, body, null)
+	var request = {
+		port: 443,
+		host: 'api.twitter.com',
+		https: true,
+		path: '/something?oauth_callback=oob',
+		oauth_signature: signer,
+		method: 'POST',
+		body: body
+	}
 
 These params get split out and included in the authorization header.	
 
@@ -56,9 +61,14 @@ That last parameter is the only portion that takes some setup.  This is the piec
 
 	var consumer = oauth.createConsumer('key','secret');
 	var signer = oauth.createHmac(consumer);
-	..
 	
-	client.request('POST', '/request_token', headers, body, signer);
+	var request = {
+		..
+		oauth_signature: signer,
+		..
+	}
+	
+	client.request(request, function(response) { ... });
 
 If you have an authorized or unauthorized token you can provide that to the createHMAC constructor as well.
 You just need to provide the type of signature you want along with the consumer and tokens, requests get automatically signed.
@@ -69,23 +79,19 @@ Consumers and tokens both have a utility method decode() that will take an http 
 
 	var data = ''
 	
-	requestToken.addListener('response', function (response) {
-		response.addListener('data', function (chunk) {	data+=chunk });
-		response.addListener('end', onRequestTokenResponse);
+	oauth.request(request, function(response)){
+		response.on('data', function (chunk) {	data+=chunk });
+		response.on('end', function () {
+			token.decode(data);
+		});
 	});
 
-	function onRequestTokenResponse() {
-		token.decode(data);
-		..
-	}
-
 # Tests
-I am not sure the total code coverage of the tests at this point, but it is quickly getting there.Running the tests requires vows.  See [vows](http://vowsjs.org/) to get started.
+See [vows](http://vowsjs.org/) to get started.
 
 Once installed:
 
 	vows tests/*
-
 
 ## License 
 
