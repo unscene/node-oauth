@@ -1,80 +1,87 @@
 //Three legged OAuth example
 var oauth = require('../lib/oauth'),
-		sys = require('sys'),
-		fs = require('fs');
+	util = require('util'),
+	fs = require('fs');
 
-var consumerKey = '';
-var consumerSecret = '';
-
-var client = oauth.createClient(443,'api.twitter.com',true);
-
-//oauth setup
-var consumer = oauth.createConsumer(consumerKey,consumerSecret);
-var token = oauth.createToken();
-var signer = oauth.createHmac(consumer);
+var consumerKey = 'ShXLZMlYgviip5g83CQLQ';
+var consumerSecret = 'Au7CzGraPjsMRjzGQKCg0OJZP3rJxm845VpfWzWdk';
 
 //endpoints
 var requestTokenUrl = '/oauth/request_token';
 var accessTokenUrl = '/oauth/access_token';
 var authorizeTokenUrl = '/oauth/authorize';
 
+//oauth setup
+var consumer = oauth.createConsumer(consumerKey,consumerSecret);
+var token = oauth.createToken();
+var signer = oauth.createHmac(consumer);
+
+var request = {
+	port: 443,
+	host: 'api.twitter.com',
+	https: true,
+   	headers: {
+    	'Connection': 'Upgrade',
+		'Upgrade': 'websocket'
+	},
+	method: 'POST',
+	path: requestTokenUrl,
+	oauth_signature: signer
+};
+
 var data = '';
 var tokenData = '';
 
-var requestToken = client.request('POST',requestTokenUrl,null,null,signer);
-requestToken.end();
+util.p(request);
 
-requestToken.addListener('response', function (response) {
-	response.addListener('data', function (chunk) {	data+=chunk });
-	response.addListener('end', onRequestTokenResponse);
+var requestToken = oauth.request(request, function (response) {
+	response.on('data', function (chunk) {	data+=chunk });
+	
+	response.on('end', function() {
+	
+		token.decode(data);
+		util.p(data)
+		
+		util.print('Visit the following website\n');
+		util.print('https://api.twitter.com'+authorizeTokenUrl+'?oauth_token='+token.oauth_token + '\n');
+		util.print('Enter verifier>')
+
+		stream = process.openStdin();
+		stream.addListener('data', function() {		
+			token.oauth_verifier = chunk.toString('utf8',0,chunk.length-1);
+			stream.removeListener('data',arguments.callee);
+
+			signer.token = token;
+			
+			request.path = accessTokenUrl
+			var accessToken = client.request(request, function(response) {
+				response.addListener('data', function(chunk) { tokenData+=chunk });
+				response.addListener('end', function() {
+					
+					token.decode(tokenData);
+						
+					var body = { status: 'testing' };
+					
+					request.path = '/1/statuses/update.json';
+					request.body = body;
+					
+					var r = client.request(request, function(response){
+						response.on('data',function(chunk) { data+=chunk })
+						response.on('end',function() { util.print(util.inspect(data)); util.print('\n'); });
+					});
+					
+					//The rest of the code is standard node
+					var data = '';
+		
+					request.write(body);
+					request.end();	
+					
+				});				
+			});
+			
+			accessToken.end();			
+		});
+	});
 });
 
-function onAccessTokenReceived() {
-	token.decode(tokenData);
-	
-	//The body passed in should be an object to both the request and when writing
-	//this allows the base string and body to be properly encoded
-	var body = { status: 'testing' };
-	
-	//Note the two extra params, the body and signature
-	var request = client.request('POST','/1/statuses/update.json',null,body,signer);
-
-	//The rest of the code is standard node
-	var data = '';
-		
-	request.write(body);
-	request.end();	
-	
-	request.addListener('response', function(response) {
-		response.addListener('data',function(chunk) { data+=chunk })
-		response.addListener('end',function() { sys.print(sys.inspect(data)); sys.print('\n'); });
-	});
-}
-
-function onAccessTokenResponse(response) {
-	response.addListener('data', function(chunk) { tokenData+=chunk });
-	response.addListener('end', onAccessTokenReceived);
-}
-
-function onRequestTokenResponse() {
-	token.decode(data);
-	sys.p(data)
-	sys.print('Visit the following website\n');
-	sys.print('https://api.twitter.com'+authorizeTokenUrl+'?oauth_token='+token.oauth_token + '\n');
-	sys.print('Enter verifier>')
-
-	stream = process.openStdin();
-	stream.addListener('data', onVerifierReceived);
-}
-
-function onVerifierReceived(chunk) {
-	var tokenData = '';
-	token.oauth_verifier = chunk.toString('utf8',0,chunk.length-1);
-	stream.removeListener('data',arguments.callee);
-
-	signer.token = token;
-	var accessToken = client.request('POST',accessTokenUrl,null,null,signer);
-	accessToken.addListener('response', onAccessTokenResponse);
-	accessToken.end();
-}
-
+requestToken.end();
