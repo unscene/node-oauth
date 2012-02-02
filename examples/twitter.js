@@ -3,8 +3,8 @@ var oauth = require('../lib/oauth'),
 	util = require('util'),
 	fs = require('fs');
 
-var consumerKey = 'ShXLZMlYgviip5g83CQLQ';
-var consumerSecret = 'Au7CzGraPjsMRjzGQKCg0OJZP3rJxm845VpfWzWdk';
+var consumerKey = '';
+var consumerSecret = '';
 
 //endpoints
 var requestTokenUrl = '/oauth/request_token';
