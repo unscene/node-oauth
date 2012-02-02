@@ -10,8 +10,8 @@ var body = {
 }
 
 var request = {
-	port: 5672,
-	host: 'localhost',
+	port: 443,
+	host: 'api.twitter.com',
 	https: true,
 	path: '/1/statuses/update.json',
 	oauth_signature: signer,
@@ -19,6 +19,7 @@ var request = {
 	body: body
 }
 
+debugger;
 var request = oauth.request(request, function(response) {
     response.setEncoding('utf8');
     response.on('data', function (chunk) {
