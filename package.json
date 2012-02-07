@@ -15,6 +15,9 @@
   "dependencies": {
     "node-uuid": "1.1.0"
   },
+  "devDependencies": {
+    "vows": "*"
+  },
   "description": "OAuth 1.0 (RFC 5849) client library.",
   "repository": {
     "type": "git",
