@@ -33,7 +33,8 @@ Sending requests works very similar to the latest version of node's built-in htt
 		path: '/1/statuses/update.json',
 		oauth_signature: signer,
 		method: 'POST',
-		body: body
+		body: body,
+        realm: 'my_realm'
 	}
 	
 	request = oauth.request(request, function(response) { ... });
