@@ -13,7 +13,7 @@
   },
   "main": "./lib/oauth",
   "dependencies": {
-    "node-uuid": "1.1.0"
+    "node-uuid": "1.4.4"
   },
   "devDependencies": {
     "vows": "*"
